@@ -1,42 +1,18 @@
 import random
 import time
 from random import randint
+from xml.dom import minidom
+
 import heapq
 
 
 class WorldData:
-    def __init__(self, country_name, life_expectancy):
+    def __init__(self, country_name, year, gender, life_expectancy):
         self.country_name = country_name
+        self.year = year
+        self.gender = gender
         self.life_expectancy = life_expectancy
 
-    def generate_life_expectancy(self):
-        life_expectancy = random.randint(65, 85)
-        return life_expectancy
-
-    def generate_country_name(self):
-        country_name = " "
-        n_country_name = random.randint(1, 10)
-        if n_country_name == 1:
-            country_name = "Brazil"
-        elif n_country_name == 2:
-            country_name = "Argentina"
-        elif n_country_name == 3:
-            country_name = "Uruguay"
-        elif n_country_name == 4:
-            country_name = "Paraguay"
-        elif n_country_name == 5:
-            country_name = "Chile"
-        elif n_country_name == 6:
-            country_name = "Bolivia"
-        elif n_country_name == 7:
-            country_name = "Peru"
-        elif n_country_name == 8:
-            country_name = "Ecuador"
-        elif n_country_name == 9:
-            country_name = "Colombia"
-        elif n_country_name == 10:
-            country_name = "Venezuela"
-        return country_name
 
     # ALGORITMOS NUMERICOS
     def insertionSort(self, alist, list_number):
@@ -332,82 +308,41 @@ class WorldData:
         file.write("ms\n")
         file.close()
 
+    def parse_list_name(self, i):
+        i = i * 5
+        country_name = xmldoc.getElementsByTagName("field")[i].firstChild.data
+        return country_name
+
+    def parse_list_year(self, i):
+        i = (i * 5) + 1
+        year = xmldoc.getElementsByTagName("field")[i].firstChild.data
+        return year
+
+    def parse_list_gender(self, i):
+        i = (i * 5) + 2
+        gender = xmldoc.getElementsByTagName("field")[i].firstChild.data
+        return gender
+
+    def parse_list_lifeEx(self, i):
+        i = (i * 5) + 3
+        life_expectancy = xmldoc.getElementsByTagName("field")[i].firstChild.data
+        return life_expectancy
+
+    def __getitem__(self, key):
+            return self.life_expectancy
+
+obj = WorldData(None, None, None, None)
+
+xmldoc = minidom.parse("ExpectativaVidaMundial.xml")
+#field = 8730
+#record = 1746
 
 
-
-obj = WorldData(None, None)
 # cria listas de objetos
+obj_list = [WorldData(obj.parse_list_name(i),
+                      obj.parse_list_year(i),
+                      obj.parse_list_gender(i),
+                      obj.parse_list_lifeEx(i))for i in range(1746)]
 
-obj_list100 = [WorldData(obj.generate_country_name(), obj.generate_life_expectancy()) for i in range(100)]
-obj_list1000 = [WorldData(obj.generate_country_name(), obj.generate_life_expectancy()) for i in range(1000)]
-obj_list2000 = [WorldData(obj.generate_country_name(), obj.generate_life_expectancy()) for i in range(2000)]
-obj_list10000 = [WorldData(obj.generate_country_name(), obj.generate_life_expectancy()) for i in range(10000)]
-obj_list100000 = [WorldData(obj.generate_country_name(), obj.generate_life_expectancy()) for i in range(100000)]
-# Para listas com 100 objetos
-random.shuffle(obj_list100)#SHUFFLE LIST
-obj.insertionSort(obj_list100, "100")
-obj.insertionSort_name(obj_list100, "100")
-random.shuffle(obj_list100)#SHUFFLE LIST
-obj.shellSort(obj_list100, "100")
-obj.shellSort_name(obj_list100, "100")
-random.shuffle(obj_list100)#SHUFFLE LIST
-obj.bubbleSort(obj_list100, "100")
-obj.bubbleSort_name(obj_list100, "100")
-random.shuffle(obj_list100)#SHUFFLE LIST
-obj.quickSort(obj_list100, 0, 99, "100")
-obj.quickSort_name(obj_list100, 0, 99, "100")
-random.shuffle(obj_list100)#SHUFFLE LIST
-obj.heapSort(obj_list100, "100")
-obj.heapSort_name(obj_list100, "100")
-# Para listas com 1000 objetos
-random.shuffle(obj_list1000)#SHUFFLE LIST
-obj.insertionSort(obj_list1000, "1000")
-obj.insertionSort_name(obj_list1000, "1000")
-random.shuffle(obj_list1000)#SHUFFLE LIST
-obj.shellSort(obj_list1000, "1000")
-obj.shellSort_name(obj_list1000, "1000")
-random.shuffle(obj_list1000)#SHUFFLE LIST
-obj.bubbleSort(obj_list1000, "1000")
-obj.bubbleSort_name(obj_list1000, "1000")
-random.shuffle(obj_list1000)#SHUFFLE LIST
-obj.quickSort(obj_list1000, 0, 999, "1000")
-obj.quickSort_name(obj_list1000, 0, 999, "1000")
-random.shuffle(obj_list1000)#SHUFFLE LIST
-obj.heapSort(obj_list1000, "1000")
-obj.heapSort_name(obj_list1000, "1000")
-# Para listas com 2000 objetos
-random.shuffle(obj_list2000)#SHUFFLE LIST
-obj.insertionSort(obj_list2000, "2000")
-obj.insertionSort_name(obj_list2000, "2000")
-random.shuffle(obj_list2000)#SHUFFLE LIST
-obj.shellSort(obj_list2000, "2000")
-obj.shellSort_name(obj_list2000, "2000")
-random.shuffle(obj_list2000)#SHUFFLE LIST
-obj.bubbleSort(obj_list2000, "2000")
-obj.bubbleSort_name(obj_list2000, "2000")
-random.shuffle(obj_list2000)#SHUFFLE LIST
-obj.quickSort(obj_list2000, 0, 999, "2000")
-obj.quickSort_name(obj_list2000, 0, 999, "2000")
-random.shuffle(obj_list2000)#SHUFFLE LIST
-obj.heapSort(obj_list2000, "2000")
-obj.heapSort_name(obj_list2000, "2000")
-# Para listas com 10000 objetos
-random.shuffle(obj_list10000)#SHUFFLE LIST
-obj.insertionSort(obj_list10000, "10000")
-obj.insertionSort_name(obj_list10000, "10000")
-random.shuffle(obj_list10000)#SHUFFLE LIST
-obj.shellSort(obj_list10000, "10000")
-obj.shellSort_name(obj_list10000, "10000")
-random.shuffle(obj_list10000)#SHUFFLE LIST
-obj.bubbleSort(obj_list10000, "10000")
-obj.bubbleSort_name(obj_list10000, "10000")
-random.shuffle(obj_list10000)#SHUFFLE LIST
-obj.heapSort(obj_list10000, "10000")
-obj.heapSort_name(obj_list10000, "10000")
-# Para listas com 100000 objetos
-random.shuffle(obj_list100000)#SHUFFLE LIST
-obj.shellSort(obj_list100000, "100000")
-obj.shellSort_name(obj_list100000, "100000")
-random.shuffle(obj_list100000)#SHUFFLE LIST
-obj.heapSort(obj_list100000, "100000")
-obj.heapSort_name(obj_list100000, "100000")
+obj_list = sorted(obj_list, key=lambda x: x[3])
+
