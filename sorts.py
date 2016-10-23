@@ -1,9 +1,32 @@
 import random
 import time
 from random import randint
+from tkinter import *
 from xml.dom import minidom
 
-import heapq
+country_by_name = None
+wht_return = 0
+field = 8730
+record = 1746
+
+class MyDialog:
+    def __init__(self, parent):
+
+        top = self.top = Toplevel(parent)
+
+        Label(top, text="Country name").pack()
+
+        self.e = Entry(top)
+        self.e.pack(padx=5)
+
+        b = Button(top, text="OK", command=self.ok)
+        b.pack(pady=5)
+
+    def ok(self):
+        global country_by_name
+        country_by_name = self.e.get()
+
+        self.top.destroy()
 
 
 class WorldData:
@@ -13,302 +36,16 @@ class WorldData:
         self.gender = gender
         self.life_expectancy = life_expectancy
 
-
-    # ALGORITMOS NUMERICOS
-    def insertionSort(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        for index in range(1, len(alist)):
-            currentvalue = alist[index].life_expectancy
-            position = index
-
-            while position > 0 and alist[position - 1].life_expectancy > currentvalue:
-                alist[position].life_expectancy = alist[position - 1].life_expectancy
-                position = position - 1
-
-            alist[position].life_expectancy = currentvalue
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("ISBL, numerico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-    def shellSort(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        sublistcount = len(alist) // 2
-        while sublistcount > 0:
-            for startposition in range(sublistcount):
-                self.gapInsertionSort(alist, startposition, sublistcount)
-
-            sublistcount = sublistcount // 2
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("SHST, numerico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-    # Shell Sort auxiliar
-    def gapInsertionSort(self, alist, start, gap):
-        for i in range(start + gap, len(alist), gap):
-
-            currentvalue = alist[i].life_expectancy
-            position = i
-
-            while position >= gap and alist[position - gap].life_expectancy > currentvalue:
-                alist[position].life_expectancy = alist[position - gap].life_expectancy
-                position = position - gap
-
-            alist[position].life_expectancy = currentvalue
-
-    def bubbleSort(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        for passnum in range(len(alist) - 1, 0, -1):
-            for i in range(passnum):
-                if alist[i].life_expectancy > alist[i + 1].life_expectancy:
-                    temp = alist[i].life_expectancy
-                    alist[i].life_expectancy = alist[i + 1].life_expectancy
-                    alist[i + 1].life_expectancy = temp
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("BBST, numerico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-
-    def quickSort(self, alist, start, end, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        self.inPlaceQuickSort(alist, start, end)
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("QSRM, numerico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-
-    def inPlaceQuickSort(self, alist, start, end):
-        if start < end:
-            pivot = randint(start, end)
-            temp = alist[end].life_expectancy
-            alist[end].life_expectancy = alist[pivot].life_expectancy
-            alist[pivot].life_expectancy = temp
-
-            p = self.inPlacePartition(alist, start, end)
-            self.inPlaceQuickSort(alist, start, p - 1)
-            self.inPlaceQuickSort(alist, p + 1, end)
-
-    def inPlacePartition(self, alist, start, end):
-        pivot = randint(start, end)
-        temp = alist[end].life_expectancy
-        alist[end].life_expectancy = alist[pivot].life_expectancy
-        alist[pivot].life_expectancy = temp
-        newPivotIndex = start - 1
-        for index in range(start, end):
-            if alist[index].life_expectancy < alist[end].life_expectancy:
-                newPivotIndex = newPivotIndex + 1
-                temp = alist[newPivotIndex].life_expectancy
-                alist[newPivotIndex].life_expectancy = alist[index].life_expectancy
-                alist[index].life_expectancy = temp
-        temp = alist[newPivotIndex + 1].life_expectancy
-        alist[newPivotIndex + 1].life_expectancy = alist[end].life_expectancy
-        alist[end].life_expectancy = temp
-        return newPivotIndex + 1
-
-
-
-    def heap_swap(self, l, i, j):
-        tmp = l[i]
-        l[i] = l[j]
-        l[j] = tmp
-
-    def heap_heapify(self, l, idx, end):
-        left = 2 * idx + 1
-        right = 2 * idx + 2
-
-        if left < end and l[left].life_expectancy > l[idx].life_expectancy:
-            largest = left
-        else:
-            largest = idx
-        if right < end and l[right].life_expectancy > l[largest].life_expectancy:
-            largest = right
-
-        if largest != idx:
-            self.heap_swap(l, idx, largest)
-            self.heap_heapify(l, largest, end)
-
-    def heap_build_heap(self, l):
-         for i in range(len(l) // 2 - 1, -1, -1):
-             self.heap_heapify(l, i, len(l))
-
-    def heapSort(self, l, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        self.heap_build_heap(l)
-        for i in range(len(l) - 1, -1, -1):
-            self.heap_swap(l, 0, i)
-            self.heap_heapify(l, 0, i)
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("HPST, numerico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-
-            # ALGORITMOS CATEGORICOS
-    def insertionSort_name(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        for index in range(1, len(alist)):
-            currentvalue = alist[index].country_name
-            position = index
-
-            while position > 0 and alist[position - 1].country_name > currentvalue:
-                alist[position].country_name = alist[position - 1].country_name
-                position = position - 1
-
-            alist[position].country_name = currentvalue
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("ISBL, categorico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-    def shellSort_name(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        gap = len(alist) // 2
-        # loop over the gaps
-        while gap > 0:
-            # do the insertion sort
-            for i in range(gap, len(alist)):
-                val = alist[i].country_name
-                j = i
-                while j >= gap and alist[j - gap].country_name > val:
-                    alist[j].country_name = alist[j - gap].country_name
-                    j -= gap
-                alist[j].country_name = val
-            gap //= 2
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("SHST, categorico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-    def bubbleSort_name(self, alist, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        for passnum in range(len(alist) - 1, 0, -1):
-            for i in range(passnum):
-                if alist[i].country_name > alist[i + 1].country_name:
-                    temp = alist[i].country_name
-                    alist[i].country_name = alist[i + 1].country_name
-                    alist[i + 1].country_name = temp
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("BBST, categorico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-    def quickSort_name(self, alist, start, end, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        self.inPlaceQuickSort_name(alist, start, end)
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("QSRM, categorico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
-
-    def inPlaceQuickSort_name(self, alist, start, end):
-        if start < end:
-            pivot = randint(start, end)
-            temp = alist[end].country_name
-            alist[end].country_name = alist[pivot].country_name
-            alist[pivot].country_name = temp
-
-            p = self.inPlacePartition_name(alist, start, end)
-            self.inPlaceQuickSort_name(alist, start, p - 1)
-            self.inPlaceQuickSort_name(alist, p + 1, end)
-
-    def inPlacePartition_name(self, alist, start, end):
-        pivot = randint(start, end)
-        temp = alist[end].country_name
-        alist[end].country_name = alist[pivot].country_name
-        alist[pivot].country_name = temp
-        newPivotIndex = start - 1
-        for index in range(start, end):
-            if alist[index].country_name < alist[end].country_name:  # check if current val is less than pivot value
-                newPivotIndex = newPivotIndex + 1
-                temp = alist[newPivotIndex].country_name
-                alist[newPivotIndex].country_name = alist[index].country_name
-                alist[index].country_name = temp
-        temp = alist[newPivotIndex + 1].country_name
-        alist[newPivotIndex + 1].country_name = alist[end].country_name
-        alist[end].country_name = temp
-        return newPivotIndex + 1
-
-
-    def heap_swap_name(self, l, i, j):
-        tmp = l[i]
-        l[i] = l[j]
-        l[j] = tmp
-
-    def heap_heapify_name(self, l, idx, end):
-        left = 2 * idx + 1
-        right = 2 * idx + 2
-
-        if left < end and l[left].country_name > l[idx].country_name:
-            largest = left
-        else:
-            largest = idx
-        if right < end and l[right].country_name > l[largest].country_name:
-            largest = right
-
-        if largest != idx:
-            self.heap_swap_name(l, idx, largest)
-            self.heap_heapify_name(l, largest, end)
-
-    def heap_build_heap_name(self, l):
-         for i in range(len(l) // 2 - 1, -1, -1):
-             self.heap_heapify_name(l, i, len(l))
-
-    def heapSort_name(self, l, list_number):
-        file = open("resultados_Zimbabwe.txt", "a")
-        start_time = time.time()
-        self.heap_build_heap_name(l)
-        for i in range(len(l) - 1, -1, -1):
-            self.heap_swap_name(l, 0, i)
-            self.heap_heapify_name(l, 0, i)
-        elapsed_time = (time.time() - start_time) * 1000
-        file.write("HPST, categorico, ")
-        file.write(list_number)
-        file.write(", ")
-        file.write(str(int(elapsed_time)))
-        file.write("ms\n")
-        file.close()
-
     def parse_list_name(self, i):
+        if i == 174:
+            print("Lista 10% carregada.")
+        if i == 436:
+            print("Lista 25% carregada.")
+        if i == 872:
+            print("Lista 50% carregada.")
+        if i == 1310:
+            print("Lista 75% carregada.")
+
         i = i * 5
         country_name = xmldoc.getElementsByTagName("field")[i].firstChild.data
         return country_name
@@ -328,21 +65,211 @@ class WorldData:
         life_expectancy = xmldoc.getElementsByTagName("field")[i].firstChild.data
         return life_expectancy
 
-    def __getitem__(self, key):
+    def __getitem__(self, key1):
+        global wht_return
+        if wht_return == 0:
+            return self.country_name
+        if wht_return == 1:
+            return self.year
+        if wht_return == 2:
+            return self.gender
+        if wht_return == 3:
             return self.life_expectancy
+
+
+def invert_list():
+    global obj_list
+    obj_list.reverse()
+    print_in_screen()
+
+
+def order_by_name():
+    global wht_return
+    global obj_list
+    wht_return = 0
+    obj_list = sorted(obj_list, key=lambda x: x[0])
+    print_in_screen()
+
+
+def order_by_year():
+    global wht_return
+    global obj_list
+    wht_return = 1
+    obj_list = sorted(obj_list, key=lambda x: x[1])
+    print_in_screen()
+
+
+def order_by_gender():
+    global wht_return
+    global obj_list
+    wht_return = 2
+    obj_list = sorted(obj_list, key=lambda x: x[2])
+    print_in_screen()
+
+
+def order_by_lf():
+    global wht_return
+    global obj_list
+    wht_return = 3
+    obj_list = sorted(obj_list, key=lambda x: x[3])
+    print_in_screen()
+
+
+
+
+def print_in_screen():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        t.insert(END, obj_list[i].country_name + ' '
+                 + obj_list[i].year + ' '
+                 + obj_list[i].gender + ' '
+                 + obj_list[i].life_expectancy + '\n')
+
+
+def print_year_1990():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].year == '1990':
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def print_year_2000():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].year == '2000':
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def print_year_2012():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].year == '2012':
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def print_gender_male():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].gender == 'Male':
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def print_gender_female():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].gender == 'Female':
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def print_gender_bothsexes():
+    t.delete('1.0', END)
+    global obj_list, record
+    for i in range(record):
+        if obj_list[i].gender == "Both sexes":
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+
+def find_country_by_name():
+    global country_by_name, record
+    d = MyDialog(root)
+    root.wait_window(d.top)
+    t.delete('1.0', END)
+    global obj_list
+    for i in range(record):
+        if obj_list[i].country_name == country_by_name:
+            t.insert(END, obj_list[i].country_name + ' '
+                     + obj_list[i].year + ' '
+                     + obj_list[i].gender + ' '
+                     + obj_list[i].life_expectancy + '\n')
+
+def donothing():
+    return 0
+
+
 
 obj = WorldData(None, None, None, None)
 
 xmldoc = minidom.parse("ExpectativaVidaMundial.xml")
-#field = 8730
-#record = 1746
 
+root = Tk()
+root.title('Zimbabwe')
+menubar = Menu(root)
+
+t = Text(root, height=15, width=55)
+scrollbar = Scrollbar(root)
+scrollbar.config(command=t.yview)
+t.config(yscrollcommand=scrollbar.set)
+t.pack(side=LEFT)
+scrollbar.pack(side=RIGHT, fill=Y, expand=False)
+t.pack(side="left", fill="both", expand=True)
 
 # cria listas de objetos
+print("Carregando lista...")
 obj_list = [WorldData(obj.parse_list_name(i),
                       obj.parse_list_year(i),
                       obj.parse_list_gender(i),
-                      obj.parse_list_lifeEx(i))for i in range(1746)]
+                      obj.parse_list_lifeEx(i))for i in range(record)]
 
-obj_list = sorted(obj_list, key=lambda x: x[3])
+print_in_screen()
+
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="Refresh", command=print_in_screen)
+filemenu.add_command(label="Save", command=donothing)
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=root.quit)
+menubar.add_cascade(label="File", menu=filemenu)
+
+ordermenu = Menu(menubar, tearoff=0)
+ordermenu.add_command(label="Invert order", command=invert_list)
+ordermenu.add_separator()
+ordermenu.add_command(label="Order by name", command=order_by_name)
+ordermenu.add_command(label="Order by year", command=order_by_year)
+ordermenu.add_command(label="Order by gender", command=order_by_gender)
+ordermenu.add_command(label="Order by life expectancy", command=order_by_lf)
+menubar.add_cascade(label="Order", menu=ordermenu)
+
+
+showmenu = Menu(menubar, tearoff=0)
+showmenuyear = Menu(showmenu, tearoff=0)
+showmenugender = Menu(showmenu, tearoff=0)
+showmenu.add_command(label="Show by country name", command=find_country_by_name)
+showmenu.add_cascade(label="Choose a year", menu=showmenuyear)
+showmenu.add_cascade(label="Choose a gender", menu=showmenugender)
+showmenuyear.add_command(label="1990", command=print_year_1990)
+showmenuyear.add_command(label="2000", command=print_year_2000)
+showmenuyear.add_command(label="2012", command=print_year_2012)
+showmenugender.add_command(label="Male", command=print_gender_male)
+showmenugender.add_command(label="Female", command=print_gender_female)
+showmenugender.add_command(label="Both sexes", command=print_gender_bothsexes)
+menubar.add_cascade(label="Show", menu=showmenu)
+
+scrollbar.config(command=t.yview)
+root.config(menu=menubar)
+
+root.mainloop()
+
 
