@@ -1,0 +1,6 @@
+MAKEFILE:
+Requisitos: Ter Python 3.5 instalado.
+Extraia o .zip em alguma pasta
+Abra a prompt e vá para o local onde foi extraido o .zip
+Escreva "py sorts.py" (sem aspas) na prompt.
+Espere o parser ser finalizado.
